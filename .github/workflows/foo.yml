@@ -1,0 +1,34 @@
+name: Foo the Bar
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+      name: checkout
+    
+    - run: ./check.sh; echo "::set-output name=status::$?"
+      name: check
+
+  real1:
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.status == 0
+    
+    steps:
+    - run: echo "status is zero"
+      name: echo
+  
+  real2:
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.status != 0
+    
+    steps:
+    - run: echo "status is not zero"
+      name: echo
