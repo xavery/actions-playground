@@ -17,10 +17,10 @@ jobs:
       id: checkout
     
     - run: |
-      out=$(./check.sh)
-      echo "::set-output name=status::$?"
-      echo "::set-output name=output::${out}"
-    
+        out=$(./check.sh)
+        echo "::set-output name=status::$?"
+        echo "::set-output name=output::${out}"
+
       shell: bash {0}
       id: check
 
