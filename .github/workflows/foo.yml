@@ -13,11 +13,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@master
-      name: checkout
+      id: checkout
     
     - run: ./check.sh; echo "::set-output name=status::$?"
       shell: bash {0}
-      name: check
+      id: check
 
   real1:
     runs-on: ubuntu-latest
@@ -26,7 +26,7 @@ jobs:
     
     steps:
     - run: echo "status is zero"
-      name: echo
+      id: echo
   
   real2:
     runs-on: ubuntu-latest
@@ -35,4 +35,4 @@ jobs:
     
     steps:
     - run: echo "status is not zero"
-      name: echo
+      id: echo
