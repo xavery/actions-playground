@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-echo >&2 "foobar2"
-exit 1
+echo "fooed the bar"
+exit 0
