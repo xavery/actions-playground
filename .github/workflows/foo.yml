@@ -13,6 +13,7 @@ jobs:
       name: checkout
     
     - run: ./check.sh; echo "::set-output name=status::$?"
+      shell: bash {0}
       name: check
 
   real1:
