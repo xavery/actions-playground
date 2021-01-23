@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-exit 0
+echo >&2 "foobar2"
+exit 1

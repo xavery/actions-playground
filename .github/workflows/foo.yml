@@ -10,12 +10,17 @@ jobs:
 
     outputs:
       status: ${{ steps.check.outputs.status }}
+      output: ${{ steps.check.outputs.output }}
     
     steps:
     - uses: actions/checkout@master
       id: checkout
     
-    - run: ./check.sh; echo "::set-output name=status::$?"
+    - run: |
+      out=$(./check.sh)
+      echo "::set-output name=status::$?"
+      echo "::set-output name=output::${out}"
+
       shell: bash {0}
       id: check
 
@@ -25,7 +30,7 @@ jobs:
     if: needs.check.outputs.status == 0
     
     steps:
-    - run: echo "status is zero"
+    - run: echo "status is zero, output is ${{needs.check.outputs.output}}"
       id: echo
   
   real2:
