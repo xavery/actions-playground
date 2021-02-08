@@ -1,0 +1,65 @@
+name: Nightly Releases
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    
+    outputs:
+      status: ${{ steps.check.outputs.status }}
+      upload_url: ${{ steps.create.outputs.upload_url }}
+    
+    steps:
+    - uses: actions/checkout@v2
+      name: checkout
+    
+    - name: nightly-check
+      id: check
+      shell: bash {0}
+      run: |
+        ver=$(./check.sh)
+        echo "::set-output name=status::$?"
+        echo "::set-output name=version::${ver}"
+
+    - name: create-release
+      id: create
+      if: steps.check.outputs.status == 0
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: nightly-${{ steps.check.outputs.version }}
+        release_name: Nightly build from ${{ steps.check.outputs.version }}
+        prerelease: true
+        commitish: env.GITHUB_SHA
+  
+  build-docker:
+  
+    needs: check
+    if: needs.check.outputs.status == 0
+  
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+      name: checkout
+
+    - name: nightly-check
+      id: check
+      shell: bash {0}
+      run: |
+        echo 'hello world' > build.txt
+
+    - name: Upload Build
+      id: upload-w32
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.check.outputs.upload_url }}
+        asset_path: ./build.txt
+        asset_name: build.txt
+        asset_content_type: text/plain

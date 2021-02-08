@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-echo "fooed the bar"
+echo "$(date +%Y-%m-%d-%H-%M-%S)"
 exit 0
