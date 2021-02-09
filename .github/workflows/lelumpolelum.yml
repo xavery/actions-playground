@@ -1,4 +1,4 @@
-name: Nightly Releases
+name: Nightly Releases Checker
 
 on:
   push:
@@ -7,10 +7,6 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    
-    outputs:
-      status: ${{ steps.check.outputs.status }}
-      upload_url: ${{ steps.create.outputs.upload_url }}
     
     steps:
     - uses: actions/checkout@v2
@@ -36,30 +32,3 @@ jobs:
         prerelease: true
         commitish: ${{ env.GITHUB_SHA }}
   
-  build-docker:
-  
-    needs: check
-    if: needs.check.outputs.status == 0
-  
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@master
-      name: checkout
-
-    - name: nightly-check
-      id: check
-      shell: bash {0}
-      run: |
-        echo 'hello world' > build.txt
-
-    - name: Upload Build
-      id: upload-w32
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.check.outputs.upload_url }}
-        asset_path: ./build.txt
-        asset_name: build.txt
-        asset_content_type: text/plain
